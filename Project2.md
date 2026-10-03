@@ -1,5 +1,5 @@
 ## What factors best predict whether an NFL offense will successfully convert a fourth-down attempt during a game from 2020-2024?
-My target variable is nfl_data_py
+MMy target variable is nfl_data_py
 ## Probelem Definition 
 This is a classification problem that benefits NFL coaching staff, front offices, roster constructors, broadcasters, analysts, and media. Investigating this problem is meaningful because fourth-down decisions are among the most impactful moments in an NFL game. A single failed conversion turns the ball over to the opponent with field position advantage, while a successful conversion extends a scoring drive; because these plays heavily shift a team’s Win Probability and Expected Points Added, optimizing fourth-down strategy directly influences wins and losses over a season.
 ## Background and Context
