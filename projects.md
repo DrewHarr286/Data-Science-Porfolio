@@ -5,4 +5,4 @@ This section documents my data science projects, research questions, and data st
 [NFL Kicker Project](projects1.md)
 ---
 # Project 2 
-[Project 2 on NFL](Project2.md)
+[Project 2 on NFL]()
