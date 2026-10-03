@@ -22,7 +22,7 @@ Several opinions exist in the dataset because it only includes fourth-down pass 
 Jupyter Notebook: [Project2.html](Project2.html)
 Dataset/API: [NFL-data-py](https://pypi.org/project/nfl-data-py/)
 No ai was used on this project I used youtube to help me out. 
-## 3 Cited Sources 
+## Key Academic References: 
 Mecha, L. (2026). xScore: A Machine Learning Framework for Evaluating NFL Team Performance and Playoff Success. Available at SSRN 6870618.
 
 Raymond, S. (2025). Fourth downs decoded: a predictive and causal analysis of player impact and decision making in the NFL.
