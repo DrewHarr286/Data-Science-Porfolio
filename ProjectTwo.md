@@ -19,9 +19,12 @@ To evaluate performance, I used accuracy, precision, recall, to measure how ofte
 The model uses yards to go, field position, goal-to-go, red-zone status, score difference, and play type to estimate the chance of a conversion, though determining which features are most influential would require examining its coefficients directly. To see where the model performs well or poorly, the classification report and confusion matrix provide reliable performance data; specifically, the confusion matrix reveals how many conversions and failures were predicted correctly, where mistakes occurred, and whether the model excels at identifying successful attempts versus failed ones. From these results, we can conclude how situational factors like yards to go, field position, score difference, and play type relate to fourth-down conversions in the 2020–2024 NFL data. However, the model cannot prove these factors cause success or reliably predict every play, as it only evaluates pass and rush attempts, and imputing missing yardage with zero may impact overall performance.
 # Limitations, Ethics, and Reflection
 Several opinions exist in the dataset because it only includes fourth-down pass and rush attempts from 2020–2024, excluding punts and field goals. Coaches and teams could be directly affected by incorrect predictions, where a false positive predicts a conversion that ultimately fails and a false negative predicts a failure when the team would have actually converted—either error could lead to poor fourth-down strategy and affect the game's outcome. Despite these risks, the model would be appropriate for real-world decision-making because leveraging this data can help teams make strategic choices to win games. To build on this foundation, future work would incorporate game context such as time remaining, score, and opponent defense, compare logistic regression against tree-based models, and evaluate performance on a later season. Ultimately, users must understand that the model's predictions are estimates rather than guarantees, given its reliance on a limited feature set and historical 2020–2024 pass and rush attempts.
+
 # Code and AI transparency:
-Jupyter Notebook: [Project2222-1.ipynb](Project2222-1.ipynb)
+Jupyter Notebook: [Project2222-1.html](Project2222-1.ipynb)
+
 Dataset/API: [NFL-data-py](https://pypi.org/project/nfl-data-py/)
+
 No ai was used on this project I used youtube to help me out. 
 # Key Academic References: 
 Mecha, L. (2026). xScore: A Machine Learning Framework for Evaluating NFL Team Performance and Playoff Success. Available at SSRN 6870618.
