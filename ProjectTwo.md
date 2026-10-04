@@ -78,6 +78,7 @@ plt.ylabel("Actual")
 plt.show()
 ```
 Visuals:
+<img width="539" height="455" alt="JETS" src="https://github.com/user-attachments/assets/6719e550-7e7e-4abe-be4a-ac1625b11bf6" />
 
 # Data Description
 Data came from nfl_data_py. In the nfl_data_py dataset, each observation or row represents an individual play recorded on 4th down where play_type is classified as a pass (pass = 1) or a rush (rush = 1). The dataset starts at about 250,000 total plays in pbp, while the filtered fourth-down dataset (df) contains roughly 3,000 plays. The target variable is success, a binary classification target where 1 means the play gained at least the yards needed for a first down (converted), and 0 means it did not (failed). Potential features are available to evaluate these decisions, though data collection was subject to assumptions, restrictions, and limitations: the data is limited to recorded NFL play-by-play from the 2020–2024 seasons, strictly including only 4th down plays and how they turned out.
