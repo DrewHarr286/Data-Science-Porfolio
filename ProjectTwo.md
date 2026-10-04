@@ -5,8 +5,81 @@ What factors best predict whether an NFL offense will successfully convert a fou
 This is a classification problem that benefits NFL coaching staff, front offices, roster constructors, broadcasters, analysts, and media. Investigating this problem is meaningful because fourth-down decisions are among the most impactful moments in an NFL game. A single failed conversion turns the ball over to the opponent with field position advantage, while a successful conversion extends a scoring drive; because these plays heavily shift a team’s Win Probability and Expected Points Added, optimizing fourth-down strategy directly influences wins and losses over a season.
 # Background and Context
 To understand the problem, the reader needs to know that an offense gets four attempted downs to gain 10 yards, and gaining 10 or more yards resets the count to a new 1st down. This approach is informed by research establishing that historical play-calling does not equal optimal play-calling, proving why data models are necessary to replace human bias with objective probabilities. Furthermore, credible sources suggest that variables such as yards to go, field position, score, and time remaining heavily matter when evaluating fourth-down decisions.
+## Visuals:
+```
+seasons = [2020, 2021, 2022, 2023, 2024]
+pbp = import_pbp_data(seasons)
+
+df = pbp[(pbp["down"] == 4) & (pbp["play_type"].isin(["pass", "rush"]))].copy()
+
+if "yards_to_go" not in df.columns:
+    if "ydstogo" in df.columns:
+        df["yards_to_go"] = df["ydstogo"]
+    else:
+        df["yards_to_go"] = 0
+
+df["yards_to_go"] = df["yards_to_go"].fillna(0)
+df["yards_gained"] = df["yards_gained"].fillna(0)
+df["success"] = (df["yards_gained"] >= df["yards_to_go"]).astype(int)
+
+df["goal_to_go"] = (df["yardline_100"] <= 10).astype(int)
+df["red_zone"] = (df["yardline_100"] <= 20).astype(int)
+df["score_diff"] = df["score_differential"].fillna(0)
+
+X = df[["yards_to_go", "yardline_100", "goal_to_go", "red_zone", "score_diff", "play_type"]]
+y = df["success"]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.25, random_state=42, stratify=y
+)
+
+preprocess = ColumnTransformer(
+    transformers=[
+        ("num", Pipeline([
+            ("imputer", SimpleImputer(strategy="median")),
+            ("scaler", StandardScaler())
+        ]), ["yards_to_go", "yardline_100", "goal_to_go", "red_zone", "score_diff"]),
+        ("cat", Pipeline([
+            ("imputer", SimpleImputer(strategy="most_frequent")),
+            ("onehot", OneHotEncoder(handle_unknown="ignore"))
+        ]), ["play_type"])
+    ]
+)
+
+model = Pipeline([
+    ("preprocess", preprocess),
+    ("model", LogisticRegression(max_iter=1000, random_state=42))
+])
+
+model.fit(X_train, y_train)
+
+y_pred = model.predict(X_test)
+y_prob = model.predict_proba(X_test)[:, 1]
+
+print("Accuracy:", round(accuracy_score(y_test, y_pred), 3))
+print("ROC AUC:", round(roc_auc_score(y_test, y_prob), 3))
+print(classification_report(y_test, y_pred))
+
+cm = confusion_matrix(y_test, y_pred)
+sns.heatmap(cm, annot=True, fmt="d", cmap="Blues",
+            xticklabels=["Failed", "Converted"],
+            yticklabels=["Actual Failed", "Actual Converted"])
+from sklearn.dummy import DummyClassifier
+
+baseline = DummyClassifier(strategy="most_frequent")
+baseline.fit(X_train, y_train)
+baseline_pred = baseline.predict(X_test)
+
+print("Baseline accuracy:", round(accuracy_score(y_test, baseline_pred), 3))
+
+plt.title("4th Down Conversion Confusion Matrix")
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.show()
+```
+
 # Data Description
-Data came from nfl_data_py. In the nfl_data_py / nflfastR play-by-play dataset, each observation or row represents an individual play recorded on 4th down where play_type is classified as a pass (pass = 1) or a rush (rush = 1). The dataset starts at about 250,000 total plays in pbp, while the filtered fourth-down dataset (df) contains roughly 3,000 plays. The target variable is success, a binary classification target where 1 means the play gained at least the yards needed for a first down (converted), and 0 means it did not (failed). Potential features are available to evaluate these decisions, though data collection was subject to assumptions, restrictions, and limitations: the data is limited to recorded NFL play-by-play from the 2020–2024 seasons, strictly including only 4th down plays and how they turned out.
+Data came from nfl_data_py. In the nfl_data_py dataset, each observation or row represents an individual play recorded on 4th down where play_type is classified as a pass (pass = 1) or a rush (rush = 1). The dataset starts at about 250,000 total plays in pbp, while the filtered fourth-down dataset (df) contains roughly 3,000 plays. The target variable is success, a binary classification target where 1 means the play gained at least the yards needed for a first down (converted), and 0 means it did not (failed). Potential features are available to evaluate these decisions, though data collection was subject to assumptions, restrictions, and limitations: the data is limited to recorded NFL play-by-play from the 2020–2024 seasons, strictly including only 4th down plays and how they turned out.
 # Data Understanding and Exploration
 Summary statistics reveal the typical range of yards needed, yards gained, field position, and score difference for the fourth-down plays analyzed. The target variable's distribution is shown on an outcome chart displaying counts and percentages, describing the classes as imbalanced if one outcome is noticeably more common than the other, or relatively balanced otherwise. In terms of patterns, relationships, unusual values, or outliers, the code checks conversion rates by yards-to-go and play type while flagging potential outliers in yards to go, yards gained, and field position. Key visualizations that aid in understanding these variables include the outcome bar chart showing the balance between failed and converted plays, the conversion rate table revealing how distance and play call relate to success, and the confusion matrix detailing where the model’s predictions are correct or mistaken. Finally, this data exploration directly informed feature-selection and preprocessing decisions by identifying yards to go, field position, and play type as core features, encoding play type, scaling numeric features to fit the model, and flagging unusual values or missing yardage for further evaluation.
 # Data Preparation and Feature Selection
