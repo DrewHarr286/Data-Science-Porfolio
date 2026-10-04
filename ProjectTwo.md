@@ -5,7 +5,7 @@ What factors best predict whether an NFL offense will successfully convert a fou
 This is a classification problem that benefits NFL coaching staff, front offices, roster constructors, broadcasters, analysts, and media. Investigating this problem is meaningful because fourth-down decisions are among the most impactful moments in an NFL game. A single failed conversion turns the ball over to the opponent with field position advantage, while a successful conversion extends a scoring drive; because these plays heavily shift a team’s Win Probability and Expected Points Added, optimizing fourth-down strategy directly influences wins and losses over a season.
 # Background and Context
 To understand the problem, the reader needs to know that an offense gets four attempted downs to gain 10 yards, and gaining 10 or more yards resets the count to a new 1st down. This approach is informed by research establishing that historical play-calling does not equal optimal play-calling, proving why data models are necessary to replace human bias with objective probabilities. Furthermore, credible sources suggest that variables such as yards to go, field position, score, and time remaining heavily matter when evaluating fourth-down decisions.
-## Visuals:
+## Code:
 ```
 seasons = [2020, 2021, 2022, 2023, 2024]
 pbp = import_pbp_data(seasons)
@@ -77,6 +77,7 @@ plt.xlabel("Predicted")
 plt.ylabel("Actual")
 plt.show()
 ```
+Visuals:
 
 # Data Description
 Data came from nfl_data_py. In the nfl_data_py dataset, each observation or row represents an individual play recorded on 4th down where play_type is classified as a pass (pass = 1) or a rush (rush = 1). The dataset starts at about 250,000 total plays in pbp, while the filtered fourth-down dataset (df) contains roughly 3,000 plays. The target variable is success, a binary classification target where 1 means the play gained at least the yards needed for a first down (converted), and 0 means it did not (failed). Potential features are available to evaluate these decisions, though data collection was subject to assumptions, restrictions, and limitations: the data is limited to recorded NFL play-by-play from the 2020–2024 seasons, strictly including only 4th down plays and how they turned out.
