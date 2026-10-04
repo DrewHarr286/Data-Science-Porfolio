@@ -20,7 +20,7 @@ The model uses yards to go, field position, goal-to-go, red-zone status, score d
 # Limitations, Ethics, and Reflection
 Several opinions exist in the dataset because it only includes fourth-down pass and rush attempts from 2020–2024, excluding punts and field goals. Coaches and teams could be directly affected by incorrect predictions, where a false positive predicts a conversion that ultimately fails and a false negative predicts a failure when the team would have actually converted—either error could lead to poor fourth-down strategy and affect the game's outcome. Despite these risks, the model would be appropriate for real-world decision-making because leveraging this data can help teams make strategic choices to win games. To build on this foundation, future work would incorporate game context such as time remaining, score, and opponent defense, compare logistic regression against tree-based models, and evaluate performance on a later season. Ultimately, users must understand that the model's predictions are estimates rather than guarantees, given its reliance on a limited feature set and historical 2020–2024 pass and rush attempts.
 # Code and AI transparency:
-Jupyter Notebook: [Project2.html](Project2222-1.ipynb)
+Jupyter Notebook: [Project2222-1.ipynb](Project2222-1.ipynb)
 Dataset/API: [NFL-data-py](https://pypi.org/project/nfl-data-py/)
 No ai was used on this project I used youtube to help me out. 
 # Key Academic References: 
