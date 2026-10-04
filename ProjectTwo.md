@@ -4,23 +4,13 @@ What factors best predict whether an NFL offense will successfully convert a fou
 # Probelem Definition 
 This is a classification problem that benefits NFL coaching staff, front offices, roster constructors, broadcasters, analysts, and media. Investigating this problem is meaningful because fourth-down decisions are among the most impactful moments in an NFL game. A single failed conversion turns the ball over to the opponent with field position advantage, while a successful conversion extends a scoring drive; because these plays heavily shift a team’s Win Probability and Expected Points Added, optimizing fourth-down strategy directly influences wins and losses over a season.
 # Background and Context
-To understand the problem, the reader needs to know that an offense gets four attempted downs to gain 10 yards, and gaining 10 or more yards resets the count to a new 1st down. This approach is informed by research establishing that historical play-calling does not equal optimal play-calling, proving why data models are necessary to replace human bias with objective probabilities. Furthermore, credible sources suggest that variables such as yards to go, field position, score, and time remaining heavily matter when evaluating fourth-down decisions.
+To understand the problem, the reader needs to know that an offense gets four attempted downs to gain 10 yards, and gaining 10 or more yards resets the count to a new 1st down. This is why data models are necessary to replace human bias with objective probabilities. Furthermore, credible sources suggest that variables such as yards to go, field position, score, and time remaining heavily matter when evaluating fourth-down decisions.
 ## Code:
 ```
 seasons = [2020, 2021, 2022, 2023, 2024]
 pbp = import_pbp_data(seasons)
 
 df = pbp[(pbp["down"] == 4) & (pbp["play_type"].isin(["pass", "rush"]))].copy()
-
-if "yards_to_go" not in df.columns:
-    if "ydstogo" in df.columns:
-        df["yards_to_go"] = df["ydstogo"]
-    else:
-        df["yards_to_go"] = 0
-
-df["yards_to_go"] = df["yards_to_go"].fillna(0)
-df["yards_gained"] = df["yards_gained"].fillna(0)
-df["success"] = (df["yards_gained"] >= df["yards_to_go"]).astype(int)
 
 df["goal_to_go"] = (df["yardline_100"] <= 10).astype(int)
 df["red_zone"] = (df["yardline_100"] <= 20).astype(int)
@@ -31,20 +21,6 @@ y = df["success"]
 
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.25, random_state=42, stratify=y
-)
-
-preprocess = ColumnTransformer(
-    transformers=[
-        ("num", Pipeline([
-            ("imputer", SimpleImputer(strategy="median")),
-            ("scaler", StandardScaler())
-        ]), ["yards_to_go", "yardline_100", "goal_to_go", "red_zone", "score_diff"]),
-        ("cat", Pipeline([
-            ("imputer", SimpleImputer(strategy="most_frequent")),
-            ("onehot", OneHotEncoder(handle_unknown="ignore"))
-        ]), ["play_type"])
-    ]
-)
 
 model = Pipeline([
     ("preprocess", preprocess),
@@ -56,15 +32,10 @@ model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 y_prob = model.predict_proba(X_test)[:, 1]
 
-print("Accuracy:", round(accuracy_score(y_test, y_pred), 3))
-print("ROC AUC:", round(roc_auc_score(y_test, y_prob), 3))
-print(classification_report(y_test, y_pred))
-
 cm = confusion_matrix(y_test, y_pred)
 sns.heatmap(cm, annot=True, fmt="d", cmap="Blues",
             xticklabels=["Failed", "Converted"],
             yticklabels=["Actual Failed", "Actual Converted"])
-from sklearn.dummy import DummyClassifier
 
 baseline = DummyClassifier(strategy="most_frequent")
 baseline.fit(X_train, y_train)
