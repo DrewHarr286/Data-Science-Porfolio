@@ -77,11 +77,39 @@ plt.xlabel("Predicted")
 plt.ylabel("Actual")
 plt.show()
 ```
-Visuals:
+## Visual 1:
 <img width="539" height="455" alt="JETS" src="https://github.com/user-attachments/assets/6719e550-7e7e-4abe-be4a-ac1625b11bf6" />
 
 # Data Description
 Data came from nfl_data_py. In the nfl_data_py dataset, each observation or row represents an individual play recorded on 4th down where play_type is classified as a pass (pass = 1) or a rush (rush = 1). The dataset starts at about 250,000 total plays in pbp, while the filtered fourth-down dataset (df) contains roughly 3,000 plays. The target variable is success, a binary classification target where 1 means the play gained at least the yards needed for a first down (converted), and 0 means it did not (failed). Potential features are available to evaluate these decisions, though data collection was subject to assumptions, restrictions, and limitations: the data is limited to recorded NFL play-by-play from the 2020–2024 seasons, strictly including only 4th down plays and how they turned out.
+# Code 2: 
+```
+counts = df["success"].value_counts().reindex([0, 1], fill_value=0)
+labels = ["Failed", "Converted"]
+
+fig, ax = plt.subplots(figsize=(7, 5))
+bars = ax.bar(labels, counts.values, color=["#d96b6b", "#4c9f70"])
+
+ax.set_title("Fourth-Down Play Outcomes")
+ax.set_xlabel("Outcome")
+ax.set_ylabel("Number of Plays")
+
+total = counts.sum()
+for bar, count in zip(bars, counts.values):
+    ax.text(
+        bar.get_x() + bar.get_width() / 2,
+        bar.get_height(),
+        f"{count:,} ({count / total:.1%})",
+        ha="center",
+        va="bottom"
+    )
+
+plt.tight_layout()
+plt.show()
+```
+## Visual 2: 
+<img width="690" height="490" alt="Image" src="https://github.com/user-attachments/assets/02972368-bee0-4157-9c68-5e4e473234e1" />
+
 # Data Understanding and Exploration
 Summary statistics reveal the typical range of yards needed, yards gained, field position, and score difference for the fourth-down plays analyzed. The target variable's distribution is shown on an outcome chart displaying counts and percentages, describing the classes as imbalanced if one outcome is noticeably more common than the other, or relatively balanced otherwise. In terms of patterns, relationships, unusual values, or outliers, the code checks conversion rates by yards-to-go and play type while flagging potential outliers in yards to go, yards gained, and field position. Key visualizations that aid in understanding these variables include the outcome bar chart showing the balance between failed and converted plays, the conversion rate table revealing how distance and play call relate to success, and the confusion matrix detailing where the model’s predictions are correct or mistaken. Finally, this data exploration directly informed feature-selection and preprocessing decisions by identifying yards to go, field position, and play type as core features, encoding play type, scaling numeric features to fit the model, and flagging unusual values or missing yardage for further evaluation.
 # Data Preparation and Feature Selection
